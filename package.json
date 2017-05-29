@@ -6,6 +6,10 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/xjjrain2012/mx-webpack-content-replace-plugin.git"
+  },
   "keywords": [
     "webpack",
     "plugin",
@@ -16,5 +20,6 @@
     "str replace"
   ],
   "author": "Rain.xia",
+  "homepage": "https://github.com/xjjrain2012/mx-webpack-content-replace-plugin#readme",
   "license": "ISC"
 }
