@@ -1,0 +1,15 @@
+{
+    "extends": "eslint:recommended",
+    "rules": {
+        "consistent-return": 2,
+        "no-else-return"   : 1,
+        "semi"             : [1, "always"],
+        "space-unary-ops"  : 2,
+        "no-console": "off"
+    },
+    "env": {
+      "browser": true,
+      "node": true,
+      "es6": true
+    }
+}

@@ -1,0 +1,20 @@
+{
+  "name": "mx-webpack-content-replace-plugin",
+  "version": "1.0.0",
+  "description": "webpack plugin: Replace content in build file in webpack workflow",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "webpack",
+    "plugin",
+    "string replace",
+    "content replace",
+    "webpack plugin",
+    "mx plugin",
+    "str replace"
+  ],
+  "author": "Rain.xia",
+  "license": "ISC"
+}
