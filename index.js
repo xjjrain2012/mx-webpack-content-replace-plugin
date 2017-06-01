@@ -1,13 +1,16 @@
 'use strict';
 
+const fs = require('fs');
+const path = require('path');
+
 module.exports = class MxContentReplaceWebpackPlugin {
   constructor(options) {
     if (MxContentReplaceWebpackPlugin.hasValidOptions(options)) {
       this.modificationSrc = options.src;
       this.modificationDes = options.dest;
       this.modificationExts = options.exts;
-
-      this.buildTrigger = 'emit';
+      this.path = options.path || '';
+      this.buildTrigger = this.getBuildTrigger(options.buildTrigger);
     }
   }
 
@@ -23,6 +26,10 @@ module.exports = class MxContentReplaceWebpackPlugin {
     }
 
     return MxContentReplaceWebpackPlugin.hasRequiredParameters(options) && Array.isArray(options.exts) && options.exts.length > 0;
+  }
+
+  getBuildTrigger(trigger) {
+    return trigger && ['done', 'emit'].indexOf(trigger) !== -1 ? trigger : this.path !== '' ? 'done' : 'emit';
   }
 
   replaceContent(src) {
@@ -67,10 +74,52 @@ module.exports = class MxContentReplaceWebpackPlugin {
 
   }
 
-  apply(compiler) {
-    compiler.plugin(this.buildTrigger, (compilation, callback) => {
-      this.replace(compilation);
-      callback && callback();
+  getFileList (buildPath) {
+    let ret = [];
+    let files = fs.readdirSync(buildPath);
+    files.forEach((item) => {
+      let tempPath = path + item;
+      let stat = fs.statSync(tempPath);
+      if (stat.isDirectory()) {
+        ret = ret.concat(this.getFileList(tempPath + '/'));
+      } else {
+          let ext = path.extname(tempPath);
+          if (ext) {
+              ext = ext.substr(1);
+              if (this.modificationExts.indexOf(ext) !== -1) {
+                  ret.push(tempPath);
+              }
+          }
+              
+      }
     });
+    return ret;
+  }
+
+  replaceFile() {
+    let files = this.getFileList(this.path);
+    files.forEach((file) => {
+        const str = fs.readFileSync(file, 'utf8');
+        const out = this.replaceContent(str);
+        fs.writeFileSync(file, out);
+    });
+  }
+
+  apply(compiler) {
+    if (this.buildTrigger === 'emit') {
+      compiler.plugin('emit', (compilation, callback) => {
+        this.replace(compilation);
+        callback && callback();
+      });
+      return;
+    }
+    if (this.buildTrigger === 'done') {
+      compiler.plugin('done', (compilation, callback) => {
+        this.replaceFile();
+        callback && callback();
+      });
+      return;
+    }
+      
   }
 };
