@@ -118,7 +118,7 @@ module.exports = class MxContentReplaceWebpackPlugin {
     let ret = [];
     let files = fs.readdirSync(buildPath);
     files.forEach((item) => {
-      let tempPath = path + item;
+      let tempPath = buildPath + item;
       let stat = fs.statSync(tempPath);
       if (stat.isDirectory()) {
         ret = ret.concat(this.getFileList(tempPath + '/'));
