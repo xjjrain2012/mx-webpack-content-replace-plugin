@@ -1,6 +1,6 @@
 > 在 webpack 打包流中替换内容
 
-在 webpack 打包过程的 emit 阶段，对指定后缀名的文件，进行文本替换
+在 webpack 打包过程的 emit 和 done 阶段，对指定后缀名的文件，进行文本替换
 
 ## 安装
 
@@ -15,6 +15,7 @@ npm i mx-webpack-content-replace-plugin --save-dev
 var mxWebpackContentReplacePlugin = require('mx-webpack-content-replace-plugin')
 ```
 添加这个插件到你的插件列表
+#### 不指定path选项，默认是 emit 触发
 ```javascript
 var config = {
   plugins: [
@@ -26,6 +27,21 @@ var config = {
   ]
 }
 ```
+
+#### 指定path选项，默认是 done 触发
+```javascript
+var config = {
+  plugins: [
+    new mxWebpackContentReplacePlugin({
+      src: /\/assets/g,
+      dest: 'assets',
+      exts: ['html', 'js', 'json'],
+      path: 'F:/xxx/xxx/'
+    })
+  ]
+}
+```
+
 ### 配置项
 
 #### src
@@ -47,4 +63,9 @@ var config = {
 - Default: 没有默认值
 - Required: true
 
-用于指定要替换文件的扩展名
+#### path
+- Type: `String`
+- Default: ''
+- Required: false
+
+用于指定要替换某文件下指定的文件， 如果设置了path, 则在 done 时触发

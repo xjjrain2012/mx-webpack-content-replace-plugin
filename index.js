@@ -10,7 +10,7 @@ module.exports = class MxContentReplaceWebpackPlugin {
       this.modificationDes = options.dest;
       this.modificationExts = options.exts;
       this.path = options.path || '';
-      this.buildTrigger = this.getBuildTrigger(options.buildTrigger);
+      this.buildTrigger = this.path !== '' ? 'done' : 'emit';
     }
   }
 
@@ -42,15 +42,6 @@ module.exports = class MxContentReplaceWebpackPlugin {
     return MxContentReplaceWebpackPlugin.hasRequiredParameters(options) && Array.isArray(options.exts) && options.exts.length > 0;
   }
 
-  /**
-   * 获取替换发生的触发点
-   * 
-   * @param {any} trigger 
-   * @returns 
-   */
-  getBuildTrigger(trigger) {
-    return trigger && ['done', 'emit'].indexOf(trigger) !== -1 ? trigger : this.path !== '' ? 'done' : 'emit';
-  }
 
   /**
    * 替换字符串中指定内容
