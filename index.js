@@ -14,12 +14,26 @@ module.exports = class MxContentReplaceWebpackPlugin {
     }
   }
 
+  /**
+   * 判断是否传了必要的参数
+   * 
+   * @static
+   * @param {any} options 
+   * @returns 
+   */
   static hasRequiredParameters(options) {
     return Object.hasOwnProperty.call(options, 'src') &&
            Object.hasOwnProperty.call(options, 'dest') &&
            Object.hasOwnProperty.call(options, 'exts');
   }
 
+  /**
+   * 检验传入的参数是否有效
+   * 
+   * @static
+   * @param {any} options 
+   * @returns 
+   */
   static hasValidOptions(options) {
     if (typeof options !== 'object') {
       return false;
@@ -28,20 +42,44 @@ module.exports = class MxContentReplaceWebpackPlugin {
     return MxContentReplaceWebpackPlugin.hasRequiredParameters(options) && Array.isArray(options.exts) && options.exts.length > 0;
   }
 
+  /**
+   * 获取替换发生的触发点
+   * 
+   * @param {any} trigger 
+   * @returns 
+   */
   getBuildTrigger(trigger) {
     return trigger && ['done', 'emit'].indexOf(trigger) !== -1 ? trigger : this.path !== '' ? 'done' : 'emit';
   }
 
+  /**
+   * 替换字符串中指定内容
+   * 
+   * @param {any} src 
+   * @returns 
+   */
   replaceContent(src) {
     return src.replace(new RegExp(this.modificationSrc), this.modificationDes);
   }
 
+  /**
+   * 处理ArrayBuffer类的文件流
+   * 
+   * @param {any} src 
+   * @returns 
+   */
   arrayBufferSourceHandle(src) {
     let str = String.fromCharCode.call(null, src);
     str = this.replaceContent(str);
     return Uint8Array.from(Array.from(str).map(o => o.charCodeAt(0)));
   }
 
+  /**
+   * 创建webpack需要的Assets文件对象
+   * 
+   * @param {any} out 
+   * @returns 
+   */
   createAssetsFileObject(out) {
     return {
       source: function() { return out; },
@@ -49,6 +87,11 @@ module.exports = class MxContentReplaceWebpackPlugin {
     };
   }
 
+  /**
+   * 文件流替换
+   * 
+   * @param {any} compilation 
+   */
   replace(compilation) {
     let assetsKeys = Object.keys(compilation.assets).filter(key => {
       let arr = key.split('.');
@@ -74,6 +117,12 @@ module.exports = class MxContentReplaceWebpackPlugin {
 
   }
 
+  /**
+   * 获取指定目录下指定后缀名的文件名
+   * 
+   * @param {any} buildPath 
+   * @returns 
+   */
   getFileList (buildPath) {
     let ret = [];
     let files = fs.readdirSync(buildPath);
@@ -96,6 +145,10 @@ module.exports = class MxContentReplaceWebpackPlugin {
     return ret;
   }
 
+  /**
+   * 替换本地文件
+   * 
+   */
   replaceFile() {
     let files = this.getFileList(this.path);
     files.forEach((file) => {
