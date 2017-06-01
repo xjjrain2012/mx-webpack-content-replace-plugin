@@ -15,6 +15,7 @@ npm i mx-webpack-content-replace-plugin --save-dev
 var mxWebpackContentReplacePlugin = require('mx-webpack-content-replace-plugin')
 ```
 添加这个插件到你的插件列表
+
 #### 不指定path选项，默认是 emit 触发
 ```javascript
 var config = {
